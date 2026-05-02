@@ -1,0 +1,15 @@
+# Nixpacks build configuration used by Railway when no Dockerfile is present.
+[phases.setup]
+nixPkgs = ["nodejs_20", "npm-9_x"]
+
+[phases.install]
+cmds = [
+  "npm --prefix server install --omit=dev",
+  "npm --prefix client install"
+]
+
+[phases.build]
+cmds = ["npm --prefix client run build"]
+
+[start]
+cmd = "npm --prefix server run migrate && npm --prefix server start"

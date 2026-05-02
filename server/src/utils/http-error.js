@@ -1,0 +1,21 @@
+'use strict';
+
+/**
+ * Express-friendly application error.
+ * Throw / next() this to produce a controlled JSON error response.
+ */
+class HttpError extends Error {
+  constructor(status, message, details) {
+    super(message);
+    this.status = status;
+    this.details = details;
+  }
+}
+
+const badRequest = (msg, details) => new HttpError(400, msg, details);
+const unauthorized = (msg = 'Unauthorized') => new HttpError(401, msg);
+const forbidden = (msg = 'Forbidden') => new HttpError(403, msg);
+const notFound = (msg = 'Not found') => new HttpError(404, msg);
+const conflict = (msg) => new HttpError(409, msg);
+
+module.exports = { HttpError, badRequest, unauthorized, forbidden, notFound, conflict };
