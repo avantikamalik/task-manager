@@ -1,27 +1,36 @@
 'use strict';
 
-require('dotenv').config({ path: require('path').resolve(__dirname, '../.env') });
+require('dotenv').config();
 
-const { buildConnection } = require('./src/config/db-connection');
+const isProduction = process.env.NODE_ENV === 'production';
 
 /** @type {import('knex').Knex.Config} */
-const baseConfig = {
+const config = {
   client: 'mysql2',
-  connection: buildConnection(),
+
+  connection: isProduction
+    ? process.env.DATABASE_URL
+    : {
+        host: process.env.DB_HOST,
+        port: process.env.DB_PORT,
+        user: process.env.DB_USER,
+        password: process.env.DB_PASSWORD,
+        database: process.env.DB_NAME,
+      },
+
   pool: { min: 0, max: 10 },
+
   migrations: {
     directory: './migrations',
     tableName: 'knex_migrations',
   },
+
   seeds: {
     directory: './seeds',
   },
 };
 
 module.exports = {
-  development: baseConfig,
-  production: {
-    ...baseConfig,
-    pool: { min: 0, max: 20 },
-  },
+  development: config,
+  production: config,
 };
